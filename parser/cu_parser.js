@@ -1,6 +1,31 @@
 var http = require("../libs/HttpRequest");
 
-var collectProductInfo = function(productInfo, pageIndex, searchCondition, callback) {
+var eventTypeInfo = {
+    "1+1": {
+        searchCondition: 23,
+        value: 1
+    },
+    "2+2": {
+        searchCondition: 24,
+        value: 2
+
+    },
+    "3+1": {
+        searchCondition: 49,
+        value: 3
+    }
+};
+
+var eventTypeKeys = Object.keys(eventTypeInfo);
+
+var collectProductInfo = function (productInfo, searchCondition, pageIndex, callback) {
+    console.log(JSON.stringify({
+        pageIndex: pageIndex,
+        listType: 0,
+        searchCondition: eventTypeInfo[searchCondition].searchCondition,
+        user_id: ""
+    }));
+
     http.connect("http://cu.bgfretail.com/event/plusAjax.do", {
         method: "POST",
         headers: {
@@ -10,7 +35,7 @@ var collectProductInfo = function(productInfo, pageIndex, searchCondition, callb
         params: {
             pageIndex: pageIndex,
             listType: 0,
-            searchCondition: searchCondition,
+            searchCondition: eventTypeInfo[searchCondition].searchCondition,
             user_id: ""
         }
     }, function ($, html, error) {
@@ -23,29 +48,39 @@ var collectProductInfo = function(productInfo, pageIndex, searchCondition, callb
             var prodObj = {
                 name: $(elem).children("p.prodName").text(),
                 price: parseInt($(elem).children("p.prodPrice").text().replace(",", "")),
-                eventType: $(elem).find("ul > li").text()
+                eventType: eventTypeInfo[searchCondition].value
             };
 
             productInfo.push(prodObj);
             passFlag = true;
         });
 
-        if(passFlag == false) {
+        if (passFlag == false) {
             callback();
-            return false;
+            return;
         }
 
-        collectProductInfo(productInfo, pageIndex + 1, searchCondition, callback);
+        collectProductInfo(productInfo, searchCondition, pageIndex + 1, callback);
+    });
+};
+
+var collectEventType = function (productInfo, eventTypeIdx, callback) {
+    if (eventTypeIdx == eventTypeKeys.length) {
+        callback();
+        return;
+    }
+
+    collectProductInfo(productInfo, eventTypeKeys[eventTypeIdx], 1, function () {
+        collectEventType(productInfo, eventTypeIdx + 1, callback);
     });
 };
 
 var run = function (callback) {
     var productInfo = [];
 
-    collectProductInfo(productInfo, 1, 23, function() {
+    collectEventType(productInfo, 0, function () {
         callback(productInfo);
     });
-
 };
 
 var obj = {
