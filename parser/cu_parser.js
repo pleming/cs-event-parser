@@ -1,28 +1,28 @@
 var http = require("../libs/HttpRequest");
 
-var eventTypeInfo = {
-    "1+1": {
+var eventTypeInfo = [
+    {
         searchCondition: 23,
-        value: 1
+        eventId: 1,
+        eventName: "1+1"
     },
-    "2+2": {
+    {
         searchCondition: 24,
-        value: 2
-
+        eventId: 2,
+        eventName: "2+1"
     },
-    "3+1": {
+    {
         searchCondition: 49,
-        value: 3
+        eventId: 3,
+        eventName: "3+1"
     }
-};
+];
 
-var eventTypeKeys = Object.keys(eventTypeInfo);
-
-var collectProductInfo = function (productInfo, searchCondition, pageIndex, callback) {
+var collectProductInfo = function (productInfo, eventType, pageIndex, callback) {
     console.log(JSON.stringify({
         pageIndex: pageIndex,
         listType: 0,
-        searchCondition: eventTypeInfo[searchCondition].searchCondition,
+        searchCondition: eventType.searchCondition,
         user_id: ""
     }));
 
@@ -35,7 +35,7 @@ var collectProductInfo = function (productInfo, searchCondition, pageIndex, call
         params: {
             pageIndex: pageIndex,
             listType: 0,
-            searchCondition: eventTypeInfo[searchCondition].searchCondition,
+            searchCondition: eventType.searchCondition,
             user_id: ""
         }
     }, function ($, html, error) {
@@ -48,7 +48,7 @@ var collectProductInfo = function (productInfo, searchCondition, pageIndex, call
             var prodObj = {
                 name: $(elem).children("p.prodName").text(),
                 price: parseInt($(elem).children("p.prodPrice").text().replace(",", "")),
-                eventType: eventTypeInfo[searchCondition].value
+                eventType: eventType.value
             };
 
             productInfo.push(prodObj);
@@ -60,17 +60,17 @@ var collectProductInfo = function (productInfo, searchCondition, pageIndex, call
             return;
         }
 
-        collectProductInfo(productInfo, searchCondition, pageIndex + 1, callback);
+        collectProductInfo(productInfo, eventType, pageIndex + 1, callback);
     });
 };
 
 var collectEventType = function (productInfo, eventTypeIdx, callback) {
-    if (eventTypeIdx == eventTypeKeys.length) {
+    if (eventTypeIdx == eventTypeInfo.length) {
         callback();
         return;
     }
 
-    collectProductInfo(productInfo, eventTypeKeys[eventTypeIdx], 1, function () {
+    collectProductInfo(productInfo, eventTypeInfo[eventTypeIdx], 1, function () {
         collectEventType(productInfo, eventTypeIdx + 1, callback);
     });
 };
@@ -88,4 +88,3 @@ var obj = {
 };
 
 exports = module.exports = obj;
-
