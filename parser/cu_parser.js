@@ -3,18 +3,15 @@ var http = require("../libs/HttpRequest");
 var eventTypeInfo = [
     {
         searchCondition: 23,
-        eventId: 1,
-        eventName: "1+1"
+        eventId: 1
     },
     {
         searchCondition: 24,
-        eventId: 2,
-        eventName: "2+1"
+        eventId: 2
     },
     {
         searchCondition: 49,
-        eventId: 3,
-        eventName: "3+1"
+        eventId: 3
     }
 ];
 
