@@ -2,23 +2,19 @@ var http = require("../libs/HttpRequest");
 
 var eventTypeInfo = [1, 2];
 
-var collectProductInfo = function (productInfo, pTab, pageIndex, callback) {
+var collectProductInfo = function (productInfo, eventType, intCurrPage, callback) {
     console.log(JSON.stringify({
         intPageSize: 10,
-        intCurrPage: pageIndex,
-        pTab: pTab
+        intCurrPage: intCurrPage,
+        pTab: eventType
     }));
 
     http.connect("http://www.7-eleven.co.kr/product/listMoreAjax.asp", {
         method: "POST",
-        headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
-        },
         params: {
             intPageSize: 10,
-            intCurrPage: pageIndex,
-            pTab: pTab
+            intCurrPage: intCurrPage,
+            pTab: eventType
         }
     }, function ($, html, error) {
         var passFlag = false;
@@ -30,7 +26,7 @@ var collectProductInfo = function (productInfo, pTab, pageIndex, callback) {
             var prodObj = {
                 name: $(elem).find("div.name").text(),
                 price: parseInt($(elem).find("div.price").text().replace(",", "")),
-                eventType: pTab
+                eventType: eventType
             };
 
             productInfo.push(prodObj);
@@ -42,7 +38,7 @@ var collectProductInfo = function (productInfo, pTab, pageIndex, callback) {
             return;
         }
 
-        collectProductInfo(productInfo, pTab, pageIndex + 1, callback);
+        collectProductInfo(productInfo, eventType, intCurrPage + 1, callback);
     });
 };
 

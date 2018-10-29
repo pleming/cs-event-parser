@@ -19,14 +19,12 @@ var collectProductInfo = function (productInfo, eventType, pageIndex, callback) 
     console.log(JSON.stringify({
         pageIndex: pageIndex,
         listType: 0,
-        searchCondition: eventType.searchCondition,
-        user_id: ""
+        searchCondition: eventType.searchCondition
     }));
 
     http.connect("http://cu.bgfretail.com/event/plusAjax.do", {
         method: "POST",
         headers: {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
             "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.181 Safari/537.36"
         },
         params: {
