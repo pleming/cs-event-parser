@@ -43,7 +43,7 @@ var collectProductInfo = function (productInfo, eventType, pageIndex, callback) 
             var prodObj = {
                 name: $(elem).children("p.prodName").text(),
                 price: parseInt($(elem).children("p.prodPrice").text().replace(",", "")),
-                eventType: eventType.value
+                eventType: eventType.eventId
             };
 
             productInfo.push(prodObj);
