@@ -8,6 +8,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "iconv-lite": "^0.4.23",
+    "mysql": "^2.15.0",
     "request": "^2.87.0"
   }
 }
